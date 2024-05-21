@@ -16,8 +16,8 @@
     </script>
 </head>
 <body>
-    <h1>
-    <p>지금은 <span id="time">{{ current_time }}</span></p></h1>
+    <h1>할 일 관리 애플리케이션에 오신 것을 환영합니다</h1>
+    <p>현재 시간: <span id="time">{{ current_time }}</span></p>
 
     <h2>할 일 목록{% if selected_tag %} (태그: {{ selected_tag }}){% endif %}</h2>
     <ul>
@@ -30,7 +30,7 @@
                     <input type="checkbox" onchange="this.form.submit()" {% if task.completed %}checked{% endif %}>
                 </form>
                 <span style="text-decoration: {% if task.completed %}line-through{% endif %};">
-                    {{ task.task }}
+                    {{ task.task }} ({{ task.priority }})
                     {% if task.deadline %}
                         <span>(마감기한: {{ task.deadline.strftime('%Y-%m-%d') }})</span>
                     {% endif %}
@@ -48,6 +48,13 @@
         <input type="text" name="task" placeholder="할 일 내용" required>
         <input type="text" name="tags" placeholder="태그 (쉼표로 구분)">
         <input type="date" name="deadline" placeholder="마감기한">
+        <select name="priority">
+            <option value="보관">중요도 선택</option>
+            <option value="A">A - 중요하고 급한 일</option>
+            <option value="B">B - 중요하고 안 급한 일</option>
+            <option value="C">C - 급하지만 안 중요한 일</option>
+            <option value="D">D - 안 급하고 안 중요한 일</option>
+        </select>
         <input type="submit" value="추가">
     </form>
 

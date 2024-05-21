@@ -31,7 +31,8 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     task = db.Column(db.String(200), nullable=False)
     completed = db.Column(db.Boolean, default=False)
-    deadline = db.Column(db.DateTime, nullable=True)  # 마감기한 필드 추가
+    deadline = db.Column(db.DateTime, nullable=True)
+    priority = db.Column(db.String(1), nullable=True, default='보관')  # 중요도 필드 추가
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     tags = db.relationship('Tag', secondary=task_tags, lazy='subquery',
         backref=db.backref('tasks', lazy=True))
@@ -60,8 +61,9 @@ def add_task():
     task_text = request.form.get('task')
     tag_names = request.form.get('tags').split(',')
     deadline = request.form.get('deadline')
+    priority = request.form.get('priority') or '보관'
     if task_text:
-        new_task = Task(task=task_text, owner=current_user)
+        new_task = Task(task=task_text, owner=current_user, priority=priority)
         if deadline:
             new_task.deadline = datetime.strptime(deadline, '%Y-%m-%d')
         for tag_name in tag_names:

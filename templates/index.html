@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>할 일 관리</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        // 실시간 시계 업데이트
+        function updateTime() {
+            const now = new Date();
+            const currentTime = now.toLocaleString('ko-KR', { hour12: false });
+            document.getElementById('time').innerText = currentTime;
+        }
+        setInterval(updateTime, 1000);
+        window.onload = updateTime;
+    </script>
+</head>
+<body>
+    <h1>
+    <p>지금은 <span id="time">{{ current_time }}</span></p></h1>
+
+    <h2>할 일 목록{% if selected_tag %} (태그: {{ selected_tag }}){% endif %}</h2>
+    <ul>
+        {% for task in tasks %}
+            <li>
+                {% for tag in task.tags %}
+                    <span style="color: {{ tag.color }};">[{{ tag.name }}]</span>
+                {% endfor %}
+                <form action="{{ url_for('complete_task', task_id=task.id) }}" method="post" style="display:inline;">
+                    <input type="checkbox" onchange="this.form.submit()" {% if task.completed %}checked{% endif %}>
+                </form>
+                <span style="text-decoration: {% if task.completed %}line-through{% endif %};">
+                    {{ task.task }}
+                    {% if task.deadline %}
+                        <span>(마감기한: {{ task.deadline.strftime('%Y-%m-%d') }})</span>
+                    {% endif %}
+                </span>
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% if selected_tag %}
+        <p><a href="{{ url_for('home') }}">전체 목록으로 돌아가기</a></p>
+    {% endif %}
+
+    <h2>할 일 추가</h2>
+    <form action="{{ url_for('add_task') }}" method="post">
+        <input type="text" name="task" placeholder="할 일 내용" required>
+        <input type="text" name="tags" placeholder="태그 (쉼표로 구분)">
+        <input type="date" name="deadline" placeholder="마감기한">
+        <input type="submit" value="추가">
+    </form>
+
+    <h2>태그 목록</h2>
+    <ul>
+        {% for tag in tags %}
+            <li><a href="{{ url_for('tasks_by_tag', tag_name=tag.name) }}" style="color: {{ tag.color }};">{{ tag.name }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <p><a href="{{ url_for('logout') }}">로그아웃</a></p>
+</body>
+</html>

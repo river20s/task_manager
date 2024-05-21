@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>회원가입</h1>
+    <form action="{{ url_for('register') }}" method="post">
+        <input type="text" name="username" placeholder="사용자 이름" required>
+        <input type="password" name="password" placeholder="비밀번호" required>
+        <input type="submit" value="회원가입">
+    </form>
+    <p><a href="{{ url_for('login') }}">로그인</a></p>
+</body>
+</html>
